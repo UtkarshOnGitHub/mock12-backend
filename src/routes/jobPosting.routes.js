@@ -13,7 +13,7 @@ JobRouter.get("/",(req,res)=>{
 JobRouter.post("/addPost" , async (req,res)=>{
     const {company,city,location,role,level,contract,position,language} = req.body;
     let d = new Date()
-    var postedAt = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDay()}`
+    var postedAt = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
     try {
         let data = new JobsModel({company,city,location,role,level,contract,position,language,postedAt})
         await data.save();
