@@ -8,7 +8,7 @@ const JobSchema = new mongoose.Schema({
     level: {type:String},
     contract: {type:String},
     position: {type:String},
-    language: {type:String},
+    language: {type:Array},
     postedAt:{type:String}
 }
 )
