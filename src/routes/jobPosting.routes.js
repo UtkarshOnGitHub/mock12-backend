@@ -12,9 +12,8 @@ JobRouter.get("/",(req,res)=>{
 
 JobRouter.post("/addPost" , async (req,res)=>{
     const {company,city,location,role,level,contract,position,language} = req.body;
-    let d = new Date().toString()
-    d = d.split(" ")
-    var postedAt = `${d[2]}-${d[1]}-${d[3]}`
+    let d = new Date()
+    var postedAt = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDay()}`
     try {
         let data = new JobsModel({company,city,location,role,level,contract,position,language,postedAt})
         await data.save();
@@ -27,20 +26,28 @@ JobRouter.post("/addPost" , async (req,res)=>{
 
 
 JobRouter.get("/getPost" , async(req,res)=>{
-    const data =  await JobsModel.find({});
+    const {page=1,limit=10,order="asc"} = req.query
+    const data =  await JobsModel.find({}).sort({["postedAt"]:order==="asc"? -1:1}).skip((page-1)*limit).limit(limit);
     res.status(200).send(data)
 })
 
 
 JobRouter.get("/search",async (req,res)=>{
-    let {language} = req.body;
+    let {language} = req.query;
     try{
-        let data = await JobsModel.find({ "language" : { "$regex": language , "$options": "i" } })
+        let data = await JobsModel.find({ "language" : { "$regex": language , "$options": "i" }})
         console.log(data)
         res.status(200).send(data)
     }catch(err){
         res.send(err)
     }
+})
+
+JobRouter.get("/filter",async (req,res)=>{
+    let {role} = req.query;
+    let data = await JobsModel.find({role:role})
+    res.status(200).send(data)
+
 })
 
 module.exports = JobRouter;
